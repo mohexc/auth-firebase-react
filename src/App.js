@@ -1,26 +1,35 @@
-import React from 'react';
-import logo from './logo.svg';
+import React, { useEffect, useState } from 'react';
+import Login from './components/Login';
+import Home from './components/Home';
+import fire from './config/firebase'
+import 'materialize-css/dist/css/materialize.min.css'
+import M from 'materialize-css/dist/js/materialize.min.js'
+
 import './App.css';
 
 function App() {
+  const [user, setUser] = useState(null)
+
+  useEffect(() => {
+    M.AutoInit()
+    authListener()
+
+    console.log(user)
+  }, [user])
+
+  const authListener = () => {
+    fire.auth().onAuthStateChanged((user) => {
+      if (user) setUser(user)
+      else setUser(null)
+    })
+  }
+
+
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
+    <div className="container">
+      { user ? <Home user={ user } /> : <Login /> }
     </div>
-  );
+  )
 }
 
 export default App;
